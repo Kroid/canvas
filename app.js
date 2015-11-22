@@ -15,27 +15,19 @@ function createDefaultMark(type) {
     mark = new ItemMark({
       left: marksArea.rect.left + marksArea.rect.width  / 5,
       top:  marksArea.rect.top  + marksArea.rect.height / 2 - 30,
-    }, {
-      image: image,
-      marksArea: marksArea,
-      marksStoreArea: marksStoreArea,
     });
     canvas.add(mark.group);
 
-    mark.connect('marksArea');
+    mark.connect('marksArea', marksArea);
     mark.home();
   } else if (type == 'price') {
     mark = new PriceMark({
       left: marksArea.rect.left + marksArea.rect.width  / 5 * 3,
       top:  marksArea.rect.top  + marksArea.rect.height / 2 - 30,
-    }, {
-      image: image,
-      marksArea: marksArea,
-      marksStoreArea: marksStoreArea,
     });
     canvas.add(mark.group);
 
-    mark.connect('marksArea');
+    mark.connect('marksArea', marksArea);
     mark.home();
   }
 
@@ -137,14 +129,14 @@ function loop() {
       } else if (mark.isInside(marksStoreArea.area())) {
         mark.moveTo(LEVEL_MARK_ON_AREA);
         mark.setNumber(count.next(mark.type));
-        mark.connect('marksStoreArea');
+        mark.connect('marksStoreArea', marksStoreArea);
         mark.home();
 
         marks.push(createDefaultMark(mark.type));
       } else if (mark.isInside(image.area())) {
         mark.moveTo(LEVEL_MARK_ON_IMAGE);
         mark.setNumber(count.next(mark.type));
-        mark.connect('image');
+        mark.connect('image', image);
         mark.home();
 
         marks.push(createDefaultMark(mark.type));
@@ -162,7 +154,7 @@ function loop() {
         mark.moveTo(LEVEL_MARK_ON_AREA);
       } else if (mark.isInside(image.area())) {
         mark.moveTo(LEVEL_MARK_ON_IMAGE);
-        mark.connect('image');
+        mark.connect('image', image);
         mark.home();
       }
 
@@ -182,11 +174,11 @@ function loop() {
         mark.home();
       } else if (mark.isInside(marksStoreArea.area()) && mark.level == LEVEL_MARK_SELECTED) {
         mark.moveTo(LEVEL_MARK_ON_AREA);
-        mark.connect('marksStoreArea');
+        mark.connect('marksStoreArea', marksStoreArea);
         mark.home();
       } else if (mark.isInside(image.area())) {
         mark.moveTo(LEVEL_MARK_ON_IMAGE);
-        mark.connect('image');
+        mark.connect('image', image);
         mark.home();
       }
 

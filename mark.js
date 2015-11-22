@@ -1,15 +1,11 @@
 'use strict';
 
-function Mark(options, objectsOnCanvas) {
+function Mark(options) {
   this.number = number;
 
   this.figure = null;
   this.label  = null;
   this.group  = null;
-
-  this.image = objectsOnCanvas.image;
-  this.marksArea = objectsOnCanvas.marksArea;
-  this.marksStoreArea = objectsOnCanvas.marksStoreArea;
 
   throw new Error('Use ItemMark or PriceMark');
 }
@@ -24,11 +20,12 @@ Mark.prototype.center = function() {
 /**
  * Connect to object on canvas
  */
-Mark.prototype.connect = function(connectType) {
+Mark.prototype.connect = function(connectType, connectObject) {
   var center = this.center();
 
   // marksArea, marksStoreArea, image;
   this.connectType = connectType;
+  this.connectObject = connectObject;
 
   switch (connectType) {
     case 'marksArea':
@@ -36,8 +33,8 @@ Mark.prototype.connect = function(connectType) {
       this.group.moveTo(LEVEL_MARK_ON_AREA);
 
       this.connectCoordinates = {
-        x: this.group.left + center.left - this.connectObject().area().left,
-        y: this.group.top  + center.top  - this.connectObject().area().top,
+        x: this.group.left + center.left - this.connectObject.area().left,
+        y: this.group.top  + center.top  - this.connectObject.area().top,
       };
 
       break;
@@ -45,16 +42,12 @@ Mark.prototype.connect = function(connectType) {
       this.group.moveTo(LEVEL_MARK_ON_IMAGE);
 
       this.connectCoordinates = {
-        x: (this.group.left + center.left - this.connectObject().area().left) / this.image.image.scaleX,
-        y: (this.group.top  + center.top  - this.connectObject().area().top) / this.image.image.scaleY,
+        x: (this.group.left + center.left - this.connectObject.area().left) / this.connectObject.image.scaleX,
+        y: (this.group.top  + center.top  - this.connectObject.area().top) / this.connectObject.image.scaleY,
       };
 
       break;
   }
-}
-
-Mark.prototype.connectObject = function() {
-  return this[this.connectType];
 }
 
 /**
@@ -65,8 +58,8 @@ Mark.prototype.home = function() {
 
   if (this.connectType != 'image') {
     this.group.set({
-      left: this.connectObject().area().left + this.connectCoordinates.x - center.left,
-      top:  this.connectObject().area().top  + this.connectCoordinates.y - center.top,
+      left: this.connectObject.area().left + this.connectCoordinates.x - center.left,
+      top:  this.connectObject.area().top  + this.connectCoordinates.y - center.top,
     });
 
     this.group.setCoords();
@@ -75,8 +68,8 @@ Mark.prototype.home = function() {
 
   // check image scale, etc.
   this.group.set({
-    left: this.connectObject().area().left + this.connectCoordinates.x * this.image.image.scaleX - center.left,
-    top:  this.connectObject().area().top  + this.connectCoordinates.y * this.image.image.scaleY - center.top,
+    left: this.connectObject.area().left + this.connectCoordinates.x * this.connectObject.image.scaleX - center.left,
+    top:  this.connectObject.area().top  + this.connectCoordinates.y * this.connectObject.image.scaleY - center.top,
   });
 
   this.group.setCoords();
@@ -118,7 +111,7 @@ Mark.prototype.isOutside = function(object) {
 }
 
 
-function ItemMark(options, objectsOnCanvas) {
+function ItemMark(options) {
   var color = 'red';
 
   this.number = null;
@@ -150,17 +143,13 @@ function ItemMark(options, objectsOnCanvas) {
   this.figure.parent = this;
   this.label.parent  = this;
   this.group.parent  = this;
-
-  this.image = objectsOnCanvas.image;
-  this.marksArea = objectsOnCanvas.marksArea;
-  this.marksStoreArea = objectsOnCanvas.marksStoreArea;
 }
 
 ItemMark.prototype = Object.create(Mark.prototype);
 ItemMark.prototype.constructor = ItemMark;
 
 
-function PriceMark(options, objectsOnCanvas) {
+function PriceMark(options) {
   var color = 'blue';
 
   this.number = null;
@@ -193,10 +182,6 @@ function PriceMark(options, objectsOnCanvas) {
   this.figure.parent = this;
   this.label.parent  = this;
   this.group.parent  = this;
-
-  this.image = objectsOnCanvas.image;
-  this.marksArea = objectsOnCanvas.marksArea;
-  this.marksStoreArea = objectsOnCanvas.marksStoreArea;
 }
 
 PriceMark.prototype = Object.create(Mark.prototype);
