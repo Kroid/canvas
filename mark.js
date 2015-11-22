@@ -14,10 +14,19 @@ function Mark(options, objectsOnCanvas) {
   throw new Error('Use ItemMark or PriceMark');
 }
 
+Mark.prototype.center = function() {
+  return {
+    left: this.group.width  / 2,
+    top:  this.group.height / 2,
+  };
+}
+
 /**
  * Connect to object on canvas
  */
 Mark.prototype.connect = function(connectType) {
+  var center = this.center();
+
   // marksArea, marksStoreArea, image;
   this.connectType = connectType;
 
@@ -27,8 +36,8 @@ Mark.prototype.connect = function(connectType) {
       this.group.moveTo(LEVEL_MARK_ON_AREA);
 
       this.connectCoordinates = {
-        x: this.group.left - this.connectObject().area().left,
-        y: this.group.top  - this.connectObject().area().top,
+        x: this.group.left + center.left - this.connectObject().area().left,
+        y: this.group.top  + center.top  - this.connectObject().area().top,
       };
 
       break;
@@ -36,8 +45,8 @@ Mark.prototype.connect = function(connectType) {
       this.group.moveTo(LEVEL_MARK_ON_IMAGE);
 
       this.connectCoordinates = {
-        x: (this.group.left - this.connectObject().area().left) / this.image.image.scaleX,
-        y: (this.group.top  - this.connectObject().area().top) / this.image.image.scaleY,
+        x: (this.group.left + center.left - this.connectObject().area().left) / this.image.image.scaleX,
+        y: (this.group.top  + center.top  - this.connectObject().area().top) / this.image.image.scaleY,
       };
 
       break;
@@ -52,10 +61,12 @@ Mark.prototype.connectObject = function() {
  * Move to connected position
  */
 Mark.prototype.home = function() {
+  var center = this.center();
+
   if (this.connectType != 'image') {
     this.group.set({
-      left: this.connectObject().area().left + this.connectCoordinates.x,
-      top:  this.connectObject().area().top  + this.connectCoordinates.y,
+      left: this.connectObject().area().left + this.connectCoordinates.x - center.left,
+      top:  this.connectObject().area().top  + this.connectCoordinates.y - center.top,
     });
 
     this.group.setCoords();
@@ -64,8 +75,8 @@ Mark.prototype.home = function() {
 
   // check image scale, etc.
   this.group.set({
-    left: this.connectObject().area().left + this.connectCoordinates.x * this.image.image.scaleX,
-    top:  this.connectObject().area().top  + this.connectCoordinates.y * this.image.image.scaleY,
+    left: this.connectObject().area().left + this.connectCoordinates.x * this.image.image.scaleX - center.left,
+    top:  this.connectObject().area().top  + this.connectCoordinates.y * this.image.image.scaleY - center.top,
   });
 
   this.group.setCoords();
@@ -92,8 +103,12 @@ Mark.prototype.moveTo = function(level) {
 };
 
 Mark.prototype.isInside = function(object) {
-  var horisontal = this.group.left >= object.left && this.group.left <= (object.left + object.width);
-  var vertical   = this.group.top  >= object.top  && this.group.top  <= (object.top  + object.height);
+  var center = this.center();
+  var left = center.left + this.group.left;
+  var top  = center.top  + this.group.top;
+
+  var horisontal = left >= object.left && left <= (object.left + object.width);
+  var vertical   = top  >= object.top  && top  <= (object.top  + object.height);
 
   return horisontal && vertical;
 }
