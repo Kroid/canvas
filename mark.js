@@ -79,25 +79,6 @@ Mark.prototype.setNumber = function(number) {
 
 Mark.prototype.mouseUpCb   = function(e) {
   this.selected = false;
-
-  // if (this.connectType == 'marksArea') {
-  //   if (this.isInside(this.marksArea.area())) {
-  //     this.home();
-  //     return;
-  //   }
-
-  //   if (this.isInside(this.marksStoreArea())) {
-
-  //     this.home();
-  //     return;
-  //   }
-  // } else if (this.connectType == 'marksStoreArea') {
-
-  // } else if (this.connectType == 'image') {
-
-  // }
-
-  // this.group.moveTo(LEVEL_MARK);
 }
 
 Mark.prototype.mouseDownCb = function(e) {

@@ -12,5 +12,5 @@ Count.prototype.next = function(type) {
 }
 
 Count.prototype.set = function(type, value) {
-  this[type] = value
+  this[type] = value;
 }

@@ -97,6 +97,28 @@ var image = new Image(canvas, imageUrl, imageArea, function() {
   marks.push(createDefaultMark('item'));
   marks.push(createDefaultMark('price'));
 
+  var zoomOutControl = new ZoomOutControl(image, {
+    left: 1,
+    top: 1,
+    text: 'Уменьшить',
+  });
+  canvas.add(zoomOutControl.group);
+
+
+  var centerControl = new CenterControl(image, {
+    left: 125,
+    top: 1,
+    text: 'По умолчанию',
+  });
+  canvas.add(centerControl.group);
+
+  var zoomControl = new ZoomControl(image, {
+    left: 280,
+    top: 1,
+    text: 'Увеличить',
+  });
+  canvas.add(zoomControl.group);
+
   loop()
 });
 
@@ -138,19 +160,10 @@ function loop() {
         mark.home();
       } else if (mark.isInside(marksStoreArea.area())) {
         mark.moveTo(LEVEL_MARK_ON_AREA);
-        // mark.moveTo(LEVEL_MARK_ON_AREA);
-        // mark.setNumber(count.next(mark.type));
-        // mark.connect('marksStoreArea');
-        // mark.home();
-
-        // marks.push(createDefaultMark(mark.type));
       } else if (mark.isInside(image.area())) {
         mark.moveTo(LEVEL_MARK_ON_IMAGE);
-        // mark.setNumber(count.next(mark.type));
         mark.connect('image');
         mark.home();
-
-        // marks.push(createDefaultMark(mark.type));
       }
 
       mark.home();
@@ -169,18 +182,12 @@ function loop() {
         mark.home();
       } else if (mark.isInside(marksStoreArea.area()) && mark.level == LEVEL_MARK_SELECTED) {
         mark.moveTo(LEVEL_MARK_ON_AREA);
-        // mark.setNumber(count.next(mark.type));
         mark.connect('marksStoreArea');
         mark.home();
-
-        // marks.push(createDefaultMark(mark.type));
       } else if (mark.isInside(image.area())) {
         mark.moveTo(LEVEL_MARK_ON_IMAGE);
-        // mark.setNumber(count.next(mark.type));
         mark.connect('image');
         mark.home();
-
-        // marks.push(createDefaultMark(mark.type));
       }
 
       mark.home();
